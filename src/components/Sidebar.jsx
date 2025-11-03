@@ -1,5 +1,5 @@
 // components/app-sidebar.jsx
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,15 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,6 +36,7 @@ import {
   NewsCentreIcon,
   HelpAndSupportIcon,
 } from "./icons/Icons";
+import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 
 // Menu items with collapsible submenus
 const menuItems = [
@@ -38,7 +48,6 @@ const menuItems = [
   {
     title: "Assessment",
     Icon: AssessmentIcon,
-    // icon: "/message-programming.svg",
     url: "/assessment",
   },
   {
@@ -82,8 +91,38 @@ const menuItems = [
 const userData = {
   name: "Latika Grover",
   role: "Sr. Hiring Manager",
+  email: "latika.grover@skillmx.com",
   avatar: "L",
 };
+
+// Dropdown menu items
+const dropdownMenuItems = [
+  {
+    label: "Team Management",
+    items: [
+      { text: "Members", icon: "/profile.svg" },
+      { text: "Teams", icon: "/multiUser.svg" },
+    ],
+  },
+  {
+    label: "Evaluators",
+    items: [
+      { text: "Manage Reviewer", icon: "/user-search.svg" },
+      { text: "Manage Proctor", icon: "/user-octagon.svg" },
+    ],
+  },
+  {
+    label: "Billing",
+    items: [
+      { text: "Overview", icon: "/category.svg" },
+      { text: "Invoices", icon: "/invoices.svg" },
+    ],
+  },
+  {
+    label: "Settings",
+    items: [{ text: "Manage ATS", icon: "/settingWheel.svg" }],
+  },
+];
 
 export function SidebarCustom() {
   const [activeItem, setActiveItem] = useState("Assessment");
@@ -121,12 +160,6 @@ export function SidebarCustom() {
             const IconComponent = item.Icon;
             const isHovered = hoveredItem === item.title;
             const isActive = activeItem === item.title;
-            console.log(
-              "active item------->",
-              activeItem,
-              "hovered-->",
-              isHovered
-            );
 
             if (!item.isCollapsible) {
               return (
@@ -143,7 +176,6 @@ export function SidebarCustom() {
                         : ""
                     }`}
                   >
-                    {/* <img src={item.icon} className="h-5 w-5" /> */}
                     <IconComponent
                       isActive={activeItem === item.title}
                       isHovered={isHovered}
@@ -215,26 +247,79 @@ export function SidebarCustom() {
       {/* Footer with User Profile */}
       <SidebarFooter>
         <SidebarMenu className="items-center">
-          <SidebarMenuItem className="p-1 hover:bg-[#EAEAFACC] rounded-[6px]">
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-gray-50 flex items-center gap-3"
-            >
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="/avatar.svg" alt="@shadcn" />
-                <AvatarFallback className="bg-yellow-400 font-bold text-gray-900">
-                  {userData.avatar}
-                </AvatarFallback>
-              </Avatar>
+          <SidebarMenuItem className="p-1 hover:bg-[#EAEAFACC] rounded-[var(--radius-s-6)]">
+            <DropdownMenu className="border-b-0">
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-gray-50 cursor-pointer flex items-center gap-3 focus-visible:ring-0"
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src="/avatar.svg" alt="@shadcn" />
+                    <AvatarFallback className="bg-yellow-400 font-bold text-gray-900">
+                      {userData.avatar}
+                    </AvatarFallback>
+                  </Avatar>
 
-              <div className="flex-1 text-left group-data-[collapsible=icon]:hidden">
-                <p className="text-sm font-semibold text-gray-900">
-                  {userData.name}
-                </p>
-                <p className="text-xs text-gray-500">{userData.role}</p>
-              </div>
-              <img src="/chevron-up-down.svg" className="h-6 w-6" />
-            </SidebarMenuButton>
+                  <div className="flex-1 text-left group-data-[collapsible=icon]:hidden">
+                    <p className="text-sm font-semibold text-gray-900">
+                      {userData.name}
+                    </p>
+                    <p className="text-xs text-gray-500">{userData.role}</p>
+                  </div>
+                  <img src="/chevron-up-down.svg" className="h-6 w-6" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                side="right"
+                align="end"
+                className="p-1 w-56 bg-white border-0 rounded-2xl shadow-[0_3px_10px_0_rgba(7,6,20,0.10)]"
+              >
+                <DropdownMenuLabel className="flex gap-2 items-center">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src="/avatar.svg" alt="@shadcn" />
+                    <AvatarFallback className="bg-yellow-400 font-bold text-gray-900">
+                      {userData.avatar}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 text-left group-data-[collapsible=icon]:hidden">
+                    <p className="text-sm font-medium text-[var(--greyscale-text-primary)]">
+                      {userData.name}
+                    </p>
+                    <p className="text-xs font-normal text-[var(--greyscale-text-tertiary)]">
+                      {userData.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                {dropdownMenuItems.map((section, sectionIndex) => (
+                  <React.Fragment key={section.label}>
+                    <DropdownMenuGroup className="px-1">
+                      <DropdownMenuSeparator className="bg-[var(--greyscale-border-default)]" />
+                      <DropdownMenuLabel className="font-medium text-xs px-3 py-1">
+                        {section.label}
+                      </DropdownMenuLabel>
+                      {section.items.map((item, itemIndex) => (
+                        <DropdownMenuItem
+                          key={item.text}
+                          className={`rounded-[var(--radius-s-6)] hover:bg-[var(--surface-subtle-primary)] px-3 py-2 flex items-center gap-2 text-sm font-normal text-[var(--greyscale-text-secondary)] hover:text-[var(--greyscale-text-primary)] cursor-pointer`}
+                        >
+                          <img src={item.icon} className="w-4 h-4" />{" "}
+                          {item.text}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  </React.Fragment>
+                ))}
+                <DropdownMenuGroup className="px-1">
+                  <DropdownMenuSeparator className="bg-[var(--greyscale-border-default)]" />
+                  <DropdownMenuItem className="cursor-pointer hover:bg-[var(--surface-subtle-primary)] hover:text-[var(--greyscale-text-primary)] text-[var(--greyscale-text-secondary)]">
+                    <img src="/upload.svg" className="w-4 h-4 rotate-90" /> Log
+                    out
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
