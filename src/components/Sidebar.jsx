@@ -11,6 +11,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -128,6 +129,7 @@ export function SidebarCustom() {
   const [activeItem, setActiveItem] = useState("Assessment");
   const [openMenus, setOpenMenus] = useState(["Questions"]); // Default open menus
   const [hoveredItem, setHoveredItem] = useState(null);
+  const { openMobile } = useSidebar()
   const toggleMenu = (title) => {
     setOpenMenus((prev) =>
       prev.includes(title)
@@ -139,7 +141,7 @@ export function SidebarCustom() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r-0 bg-[var(--surface-subtle-primary)]"
+      className={`border-r-0 bg-[var(--surface-subtle-primary)] ${openMobile ? "bg-[var(--surface-subtle-primary)] border-r-0" : ""}`}
     >
       {/* Header with Logo */}
       <SidebarHeader className="p-0 group-data-[collapsible=icon]:p-2">
@@ -254,11 +256,8 @@ export function SidebarCustom() {
                   size="lg"
                   className="data-[state=open]:bg-gray-50 cursor-pointer flex items-center gap-3 focus-visible:ring-0"
                 >
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-10 w-10" asChild>
                     <AvatarImage src="/avatar.svg" alt="@shadcn" />
-                    <AvatarFallback className="bg-yellow-400 font-bold text-gray-900">
-                      {userData.avatar}
-                    </AvatarFallback>
                   </Avatar>
 
                   <div className="flex-1 text-left group-data-[collapsible=icon]:hidden">
@@ -272,16 +271,14 @@ export function SidebarCustom() {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
-                side="right"
-                align="end"
+                side={openMobile ? "top" : "right"}
+                align="center"
+                collisionPadding={12}
                 className="p-1 w-56 bg-white border-0 rounded-2xl shadow-[0_3px_10px_0_rgba(7,6,20,0.10)]"
               >
                 <DropdownMenuLabel className="flex gap-2 items-center">
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="size-10" asChild>
                     <AvatarImage src="/avatar.svg" alt="@shadcn" />
-                    <AvatarFallback className="bg-yellow-400 font-bold text-gray-900">
-                      {userData.avatar}
-                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 text-left group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium text-[var(--greyscale-text-primary)]">
@@ -292,14 +289,14 @@ export function SidebarCustom() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                {dropdownMenuItems.map((section, sectionIndex) => (
+                {dropdownMenuItems.map((section) => (
                   <React.Fragment key={section.label}>
                     <DropdownMenuGroup className="px-1">
                       <DropdownMenuSeparator className="bg-[var(--greyscale-border-default)]" />
                       <DropdownMenuLabel className="font-medium text-xs px-3 py-1">
                         {section.label}
                       </DropdownMenuLabel>
-                      {section.items.map((item, itemIndex) => (
+                      {section.items.map((item) => (
                         <DropdownMenuItem
                           key={item.text}
                           className={`rounded-[var(--radius-s-6)] hover:bg-[var(--surface-subtle-primary)] px-3 py-2 flex items-center gap-2 text-sm font-normal text-[var(--greyscale-text-secondary)] hover:text-[var(--greyscale-text-primary)] cursor-pointer`}
